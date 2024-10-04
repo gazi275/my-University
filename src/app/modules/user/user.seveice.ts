@@ -1,43 +1,56 @@
-
-import config from '../../config';
-
-import { TStudent } from '../student/student.interface';
-import { Student } from '../student/student.model';
-import { TUser } from './user.interface';
-import { User } from './user.model';
-import { generatedID } from './user.utils';
-import { AcademicSemester } from '../AcademicSemister/AcademicSemester.model';
+import mongoose from "mongoose";
+import { AcademicSemester } from "../AcademicSemister/AcademicSemester.model";
+import { Student } from "../student/student.model";
+import { User } from "./user.model";
+import config from "../../config";
+import { TStudent } from "../student/student.interface";
+import { TUser } from "./user.interface";
+import { generatedID } from "./user.utils";
 
 const createStudentIntoDB = async (password: string, studentData: TStudent) => {
-  // create a user object
   const userData: Partial<TUser> = {};
-
-  //if password is not given , use deafult password
-  userData.password = password || (config.default_password as string);
- 
-  //set student role
+  userData.password = password || config.default_password as string;
   userData.role = 'student';
-  
-  const admissionSemester = await AcademicSemester.findById(
-    studentData.admissionSemester,
-  );
- 
-  userData.id =await generatedID(admissionSemester);
 
-  // create a user
-  const newUser = await User.create(userData);
+  const session = await mongoose.startSession();
 
-  //create a student
-  if (Object.keys(newUser).length) {
-    // set id , _id as user
-    studentData.id = newUser.id;
-    studentData.user = newUser._id; //reference _id
+  try {
+    await session.startTransaction();
+    
+    const admissionSemester = await AcademicSemester.findById(studentData.admissionSemester);
+    if (!admissionSemester) {
+      throw new Error('Invalid admission semester');
+    }
+    
+    userData.id = await generatedID(admissionSemester);
+    
+    const newUser = await User.create([userData], { session });
+    if (!newUser.length) {
+      throw new Error('User was not created');
+    }
+    
+    studentData.id = newUser[0].id;
+    studentData.user = newUser[0]._id;
 
-    const newStudent = await Student.create(studentData);
-    return newStudent;
+    const newStudent = await Student.create([studentData], { session });
+    if (!newStudent.length) {
+      throw new Error('Student was not created');
+    }
+    
+    await session.commitTransaction();
+
+    // Log the new student to confirm creation
+   
+
+    return newStudent[0];  // Return the first element
+  } catch (error) {
+    await session.abortTransaction();
+    throw new Error('error occurs')
+    
+  } finally {
+    await session.endSession();
   }
 };
-
-export const UserServices = {
-  createStudentIntoDB,
-};
+export const UserServices={
+  createStudentIntoDB
+}

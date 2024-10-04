@@ -13,20 +13,26 @@ const findLastStudent = async () => {
 
 // Generate a new unique student ID
 export const generatedID = async (payload: TAcademicSemester) => {
-  let isUnique = false;
-  let incrementID = '';
+  let currentId = (0).toString(); // 0000 by deafult
 
-  while (!isUnique) {
-    const currentId = await findLastStudent() || (0).toString();
-    incrementID = (Number(currentId) + 1).toString().padStart(4, '0');
-    incrementID = `${payload.year}${payload.code}${incrementID}`;
+  const lastStudentId = await findLastStudent();
+  // 2030 01 0001
+  const lastStudentSemesterCode = lastStudentId?.substring(4, 6); //01;
+  const lastStudentYear = lastStudentId?.substring(0, 4); // 2030
+  const currentSemesterCode = payload.code;
+  const currentYear = payload.year;
 
-    // Check if the ID already exists in the database
-    const existingUser = await User.findOne({ id: incrementID });
-    if (!existingUser) {
-      isUnique = true; // ID is unique, exit the loop
-    }
+  if (
+    lastStudentId &&
+    lastStudentSemesterCode === currentSemesterCode &&
+    lastStudentYear === currentYear
+  ) {
+    currentId = lastStudentId.substring(6); // 00001
   }
 
-  return incrementID;
+  let incrementId = (Number(currentId) + 1).toString().padStart(4, '0');
+
+  incrementId = `${payload.year}${payload.code}${incrementId}`;
+
+  return incrementId;
 };
