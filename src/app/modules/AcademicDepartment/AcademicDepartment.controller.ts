@@ -14,7 +14,7 @@ const getAllAcademeicDepartment=catchAsync(async(req,res)=>{
 
 })
 const updatedAcademicDepartment=catchAsync(async(req,res)=>{
-    const AcademicID=req.params
+    const { id: AcademicID } = req.params;
     
     const result=await AcademicDepartmentServices.updatedDepartmentService(AcademicID,req.body)
     sendResponse(res,{statusCode:httpStatus.OK,success:true,message:'academic department is updated',data:result})
