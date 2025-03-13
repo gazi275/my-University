@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+import { Model } from 'mongoose';
+
 export type TUser = {
     id: string;
     password: string;
@@ -6,3 +9,14 @@ export type TUser = {
     status: 'in-progress' | 'blocked';
     isDeleted: boolean;
   };
+
+  export interface UserModel extends Model<TUser> {
+    //instance methods for checking if the user exist
+    isUserExistsByCustomId(id: string): Promise<TUser>;
+    
+    isPasswordMatch(
+      // eslint-disable-next-line no-unused-vars
+      password: string,
+      hash: string,
+    ): Promise<boolean>;
+  }

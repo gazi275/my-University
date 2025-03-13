@@ -6,6 +6,7 @@ import { loginValidationSchema } from "./auth.validation";
 const router = Router();
 
 router.post('/login',validateMiddleware(loginValidationSchema),AuthControllers.LoginUser)
+export const AuthRoutes = router;
 
 
 
