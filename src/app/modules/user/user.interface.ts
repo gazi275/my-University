@@ -1,6 +1,13 @@
 /* eslint-disable no-unused-vars */
 import { Model } from 'mongoose';
 
+
+export const USER_ROLE = {
+  student: 'student',
+  faculty: 'faculty',
+  admin: 'admin',
+} as const;
+
 export type TUser = {
     id: string;
     password: string;
@@ -20,3 +27,5 @@ export type TUser = {
       hash: string,
     ): Promise<boolean>;
   }
+
+  export type TUserRole = keyof typeof USER_ROLE;

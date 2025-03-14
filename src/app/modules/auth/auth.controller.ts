@@ -1,8 +1,9 @@
+
 import config from '../../config';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 
-import { authSerivces } from './auth.server';
+import { authSerivces } from './auth.service';
 
 const LoginUser = catchAsync(async (req, res) => {
   const result = await authSerivces.LoginUser(req.body);
@@ -19,7 +20,18 @@ const LoginUser = catchAsync(async (req, res) => {
     data: { accessToken, needsPasswordChange },
   });
 });
+const forgetPassword = catchAsync(async (req, res) => {
+
+  const result = await authSerivces.forgetPassword(req.user,req.body)
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Password changed successfully',
+    data: result,
+  });
+});
 
 export const AuthControllers = {
   LoginUser,
+  forgetPassword
 };
