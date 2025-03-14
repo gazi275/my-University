@@ -9,3 +9,11 @@ export const forgetPasswordSchema = z.object({
   oldPassword: z.string({ required_error: 'Old password is required.' }),
   newPassword: z.string({ required_error: 'New password is required.' }),
 });
+
+export const refreshTokenValidationSchema = z.object({
+  cookies: z.object({
+    refreshToken: z.string({
+      required_error: 'Refresh token is required!',
+    }),
+  }),
+});

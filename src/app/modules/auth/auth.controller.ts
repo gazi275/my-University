@@ -20,7 +20,7 @@ const LoginUser = catchAsync(async (req, res) => {
     data: { accessToken, needsPasswordChange },
   });
 });
-const forgetPassword = catchAsync(async (req, res) => {
+const changePassword = catchAsync(async (req, res) => {
 
   const result = await authSerivces.forgetPassword(req.user,req.body)
   sendResponse(res, {
@@ -30,8 +30,20 @@ const forgetPassword = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const refreshtoken = catchAsync(async (req, res) => {
+  const result = await authSerivces.refreshToken(req.cookies.refreshToken);
+  sendResponse(res, {
+    statusCode: 200,  
+    success: true,
+    message: 'Token is refreshed',
+    data: result,
+  });
+});
+
+
 
 export const AuthControllers = {
   LoginUser,
-  forgetPassword
+  changePassword,
+  refreshtoken,
 };
