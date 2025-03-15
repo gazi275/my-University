@@ -12,6 +12,7 @@ export type TUser = {
     id: string;
     password: string;
     needsPasswordChange: boolean;
+    email: string;
     passwordChangedAt?: Date;
     role: 'admin' | 'student' | 'faculty';
     status: 'in-progress' | 'blocked';

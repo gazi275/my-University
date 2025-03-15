@@ -6,6 +6,7 @@ import { User } from '../user/user.model';
 import { LoginSchema } from './auth.interface';
 import { generateToken } from './auth.utils';
 import jwt from 'jsonwebtoken';
+import { sendEmail } from '../../utils/sendEmail';
 
 type Ipayload = {
   oldPassword: string;
@@ -50,7 +51,7 @@ const LoginUser = async (payload: LoginSchema) => {
   };
 };
 
-const forgetPassword = async (userData: JwtPayload, payload: Ipayload) => {
+const changePassword = async (userData: JwtPayload, payload: Ipayload) => {
   const user = await User.findOne({ id: userData.userId });
   if (!user) {
     throw new Error('User not found');
@@ -87,7 +88,7 @@ const forgetPassword = async (userData: JwtPayload, payload: Ipayload) => {
 };
 
 const refreshToken = async (token: string) => {
-  // checking if the given token is valid
+
   const decoded = jwt.verify(
     token,
     config.JWT_REFRESH_SECRET as string,
@@ -95,20 +96,21 @@ const refreshToken = async (token: string) => {
 
   const { userId, iat } = decoded;
 
-  // checking if the user is exist
+ 
   const user = await User.isUserExistsByCustomId(userId);
+  console.log(user);
 
   if (!user) {
     throw new Error( 'This user is not found !');
   }
-  // checking if the user is already deleted
+
   const isDeleted = user?.isDeleted;
 
   if (isDeleted) {
     throw new Error('This user is deleted !');
   }
 
-  // checking if the user is blocked
+
   const userStatus = user?.status;
 
   if (userStatus === 'blocked') {
@@ -138,9 +140,41 @@ const refreshToken = async (token: string) => {
   };
 };
 
+const requestPasswordReset = async (userId: string) => {
+  const user = await User.isUserExistsByCustomId(userId);
+  console.log(user);
+  if (!user) {
+    throw new Error('User not found');
+  }
+  if (user.status === 'blocked') {
+    throw new Error('User is blocked');
+  }
+  if (user.isDeleted) {
+    throw new Error('User is deleted');
+  }
+  const jwtPayload = {
+    userId: user.id,
+    role: user.role,
+  };
+
+  const resetToken = generateToken(
+    jwtPayload,
+    config.JWT_SECRET as string,
+    "10m",
+  );
+  const resetUILink = `${config.reset_pass_ui_link}?id=${user.id}&token=${resetToken}`;
+
+  sendEmail(user.email, resetUILink);
+
+  
+
+}
+
 
 export const authSerivces = {
   LoginUser,
-  forgetPassword,
+  requestPasswordReset,
   refreshToken,
+  changePassword,
+  
 };

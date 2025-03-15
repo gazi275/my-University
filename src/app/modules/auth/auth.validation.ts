@@ -5,7 +5,7 @@ export const loginValidationSchema = z.object({
   password: z.string({ required_error: 'Password is required' }),
 });
 
-export const forgetPasswordSchema = z.object({
+export const changePasswordSchema = z.object({
   oldPassword: z.string({ required_error: 'Old password is required.' }),
   newPassword: z.string({ required_error: 'New password is required.' }),
 });
@@ -16,4 +16,12 @@ export const refreshTokenValidationSchema = z.object({
       required_error: 'Refresh token is required!',
     }),
   }),
+});
+
+export const forgetPasswordValidationSchema = z.object({
+ 
+    id: z.string({
+      required_error: 'User id is required!',
+    }),
+
 });

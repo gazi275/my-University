@@ -11,6 +11,7 @@ import { TStudent } from "../student/student.interface";
   const userData: Partial<TUser> = {};
   userData.password = password || config.default_password as string;
   userData.role = 'student';
+  userData.email = studentData.email;
 
   const session = await mongoose.startSession();
 

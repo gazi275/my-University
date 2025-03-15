@@ -14,6 +14,9 @@ export default {
 
   JWT_REFRESH_SECRET: process.env.REFRESH_SECRET,
   REFRESH_EXPIRES_IN: process.env.REFRESH_EXPIRES_IN,
+  reset_pass_ui_link: process.env.reset_pass_ui_link,
+  EMAIL_USER: process.env.EMAIL_USER,
+  EMAIL_PASS: process.env.EMAIL_PASS,
 
  
 };
