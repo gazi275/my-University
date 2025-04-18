@@ -23,7 +23,7 @@ import { TStudent } from "../student/student.interface";
       throw new Error('Invalid admission semester');
     }
     
-    console.log('Generated ID');
+
     userData.id = await generatedID(admissionSemester);
     
     const newUser = await User.create([userData], { session });
@@ -31,7 +31,7 @@ import { TStudent } from "../student/student.interface";
       throw new Error('User was not created');
     }
 
-    console.log('User created:', newUser[0]);
+ 
 
     studentData.id = newUser[0].id;
     studentData.user = newUser[0]._id;
@@ -42,16 +42,16 @@ import { TStudent } from "../student/student.interface";
     }
     
     await session.commitTransaction();
-    console.log('Transaction committed');
+  
     
     return newStudent[0];  // Return the first element
   } catch (error) {
     await session.abortTransaction();
-    console.error('Error occurred during transaction:', error);
+
     throw new Error(error instanceof Error ? error.message : 'An unknown error occurred');
   } finally {
     await session.endSession();
-    console.log('Session ended');
+   
   }
 };
 

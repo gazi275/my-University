@@ -42,7 +42,7 @@ const refreshtoken = catchAsync(async (req, res) => {
 
 const forgetPassword = catchAsync(async (req, res) => {
   const userId = req.body.id
-  console.log(userId);
+  
   const result = await authSerivces.requestPasswordReset(userId)
   sendResponse(res, {
     statusCode: 200,

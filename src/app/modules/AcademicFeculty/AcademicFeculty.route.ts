@@ -8,7 +8,7 @@ import { AcademicFacultyControllers } from './AcademicFeculty.controller';
 const router = express.Router();
 
 router.post(
-  '/create-academic-faculty',
+  '/create-academic-feculty',
   validateMiddleware(
     AcademicFacultyValidation.createAcademicFacultyValidationSchema,
   ),
@@ -27,4 +27,4 @@ router.patch(
 
 router.get('/', AcademicFacultyControllers.getAllAcademicFaculties);
 
-export const AcademicFacultyRoutes = router;
+export const AcademicFecultyRoutes = router;

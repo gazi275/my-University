@@ -13,7 +13,9 @@ const app: Application = express();
 //parsers
 app.use(express.json());
 app.use(cors());
-
+app.get('/', (req, res) => {
+    res.send('API is running');
+  });
 // application routes
 app.use('/api/v1', router);
 

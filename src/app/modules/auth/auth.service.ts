@@ -98,7 +98,7 @@ const refreshToken = async (token: string) => {
 
  
   const user = await User.isUserExistsByCustomId(userId);
-  console.log(user);
+
 
   if (!user) {
     throw new Error( 'This user is not found !');
@@ -142,7 +142,6 @@ const refreshToken = async (token: string) => {
 
 const requestPasswordReset = async (userId: string) => {
   const user = await User.isUserExistsByCustomId(userId);
-  console.log(user);
   if (!user) {
     throw new Error('User not found');
   }

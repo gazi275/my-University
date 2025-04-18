@@ -12,11 +12,11 @@ export const sendEmail = async (to: string, resetLink: string) => {
     },
   });
 
-  // Ensure both plain-text and HTML versions are provided
+  
   const mailOptions = {
     from: config.EMAIL_USER,
     to,
-    subject: "Password Recovery Request", // Changed to sound more natural
+    subject: "Password Recovery Request", 
     text: `Dear user, click the following link to reset your password: ${resetLink}`,
     html: `<p>Dear user,</p><p>Click <a href="${resetLink}">here</a> to reset your password.</p>`,
     headers: {
@@ -27,6 +27,10 @@ export const sendEmail = async (to: string, resetLink: string) => {
   try {
     await transporter.sendMail(mailOptions);
   } catch (error) {
-    console.error("Error sending email:", error);
-  }
+    if (error instanceof Error) {
+      throw new Error('Failed to send email: ' + error.message);
+    } else {
+      throw new Error('Failed to send email due to an unknown error.');
+    }
 };
+}
